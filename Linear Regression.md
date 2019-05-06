@@ -18,6 +18,8 @@
 
 ==Every row of $W$ is a classifier for one of the classes.==
 
+![img](assets/wb.jpeg)
+
 ## 2 Loss Function
 
 - Without regularization
