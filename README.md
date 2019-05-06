@@ -1,8 +1,7 @@
 # Machine-Learning-Note
 
-## 1 Overview
+- [ ] 1 Overview
+- [ ] 2 Supervised Learning
+  - [ ] [Linear Regression](./Linear Regression.md)
+  - [ ] [Softmax Regression](./Softmax Regression.md)
 
-## 2 Supervised Learning
-
-1. [Linear Regression](./Linear Regression.md)
-2. 
