@@ -2,26 +2,29 @@
 
 [TOC]
 
-## 1 Forward Propagation
-
-## 2 Loss (Softmax Loss)
-
-### 2.1 Example
 
 
 
-### 2.2 Code
 
 ```python
-max_scores = np.reshape(np.max(scores, axis=1), (N,1))
-exp_scores = np.exp(scores-max_scores)
-probs = exp_scores/np.sum(exp_scores, axis=1, keepdims=True)
-loss = np.sum(-np.log(probs[range(N),y]))
-loss /= N
-loss += reg * np.sum(W1 * W1) + reg * np.sum(W2 * W2)
+# delta2
+delta2 = probs # N * C
+delta2[range(N),y] -= 1 # y: 1 * N
+delta2 /= N
+# W2 and b2
+dW2 = scores1.T.dot(delta2) # H * C
+db2 = np.sum(delta2, axis=0, keepdims = True) # 1 * C
+# delta1
+dscores1 = scores1 # N * H
+dscores1[dscores1>0] = 1
+delta1 = delta2.dot(W2.T)*dscores1 # N * H
+# W1 and b1
+dW1 = X.T.dot(delta1) # D * H
+db1 = np.sum(delta1, axis=0, keepdims = True) # 1 * H
+# Add regualrization
+dW2 += 2 * reg * W2
+dW1 += 2 * reg * W1
 ```
-
-## 3 Backward Propagation
 
 
 
