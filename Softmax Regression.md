@@ -8,13 +8,10 @@
 
 ## 2 Loss Function
 
-$$
-f(x_i; W) =  W x_i\\
-$$
+Interpret scores as the unnormalized log probabilities for each class and replace the **hinge loss** with a **cross-entropy loss (交叉熵损失)**.
 
-Interpret scores as the unnormalized log probabilities for each class and replace the *hinge loss* with a **cross-entropy loss (交叉熵损失)**.
-
->Possibly confusing naming conventions. To be precise, the SVM classifier uses the hinge loss, or also sometimes called the max-margin loss. The Softmax classifier uses the cross-entropy loss. The Softmax classifier gets its name from the softmax function, which is used to squash the raw class scores into normalized positive values that sum to one, so that the cross-entropy loss can be applied. In particular, note that technically it doesn’t make sense to talk about the “softmax loss”, since softmax is just the squashing function, but it is a relatively commonly used shorthand.
+- The SVM classifier uses the hinge loss (the max-margin loss). 
+- The Softmax classifier uses the cross-entropy loss. 
 
 $$
 L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right)\\
@@ -22,6 +19,23 @@ L_i = -\log\left(\frac{e^{f_{y_i}}}{ \sum_j e^{f_j} }\right)\\
 L_i = -f_{y_i} + \log\sum_j e^{f_j}
 $$
 The function $f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}}$ is called the **softmax function**: It takes a vector of arbitrary real-valued scores (in $z$) and squashes it to a vector of values between zero and one that sum to one. 
+
+### 2.1 Example
+
+ [Softmax Loss.ipynb](Softmax Loss.ipynb) 
+
+### 2.2 Code
+
+```python
+# data loss
+max_scores = np.reshape(np.max(scores, axis=1), (N,1))
+exp_scores = np.exp(scores - max_scores)
+probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
+loss = np.sum(-np.log(probs[range(N),y]))
+loss /= N
+# regularization
+loss += reg * np.sum(W * W)
+```
 
 ## 3 Find $\theta$
 
