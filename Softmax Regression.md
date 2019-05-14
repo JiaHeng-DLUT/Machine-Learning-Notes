@@ -22,14 +22,33 @@ The function $f_j(z) = \frac{e^{z_j}}{\sum_k e^{z_k}}$ is called the **softmax f
 
 ### 2.1 Example
 
- [Softmax Loss.ipynb](Softmax Loss.ipynb) 
+ [Softmax Loss.ipynb](./Softmax Loss.ipynb) 
 
-### 2.2 Code
+### 2.2 Practical Issues: Numeric Stability
+
+When writing code for computing the Softmax function in practice, the intermediate terms $e^{f_{y_i}}$ and $\sum_j e^{f_j}$ may be very large due to the exponentials. Dividing large numbers can be numerically unstable, so it is important to use a normalization trick. 
+$$
+\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}
+= \frac{Ce^{f_{y_i}}}{C\sum_j e^{f_j}}
+= \frac{e^{f_{y_i} + \log C}}{\sum_j e^{f_j + \log C}}
+$$
+We are free to choose the value of $C$. This will not change any of the results, but ==we can use this value to improve the numerical stability of the computation==. A common choice for $C$ is to set $\log C = -\max_j f_j$. This simply states that we should shift the values inside the vector $f$ so that the highest value is zero. In code:
+
+```python
+f = np.array([123, 456, 789]) # example with 3 classes and each having large scores
+p = np.exp(f) / np.sum(np.exp(f)) # Bad: Numeric problem, potential blowup
+
+# instead: first shift the values of f so that the highest number is 0:
+f -= np.max(f) # f becomes [-666, -333, 0]
+p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
+```
+
+### 2.3 Code
 
 ```python
 # data loss
 max_scores = np.reshape(np.max(scores, axis=1), (N,1))
-exp_scores = np.exp(scores - max_scores)
+exp_scores = np.exp(scores - max_scores) # solve Numeric Stability issue
 probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 loss = np.sum(-np.log(probs[range(N),y]))
 loss /= N
@@ -58,25 +77,6 @@ P(y_i \mid x_i; W) = \frac{e^{f_{y_i}}}{\sum_j e^{f_j} }
 $$
 
 The (normalized) probability assigned to the correct label $y_i$ given the image $x_i$ and parameterized by $W$. To see this, remember that the Softmax classifier interprets the scores inside the output vector $f$ as the unnormalized log probabilities. Exponentiating these quantities therefore gives the (unnormalized) probabilities, and the division performs the normalization so that the probabilities sum to one. 
-
-## 5 Practical Issues: Numeric Stability
-
-When you’re writing code for computing the Softmax function in practice, the intermediate terms $e^{f_{y_i}}$ and $\sum_j e^{f_j}$ may be very large due to the exponentials. Dividing large numbers can be numerically unstable, so it is important to use a normalization trick. 
-$$
-\frac{e^{f_{y_i}}}{\sum_j e^{f_j}}
-= \frac{Ce^{f_{y_i}}}{C\sum_j e^{f_j}}
-= \frac{e^{f_{y_i} + \log C}}{\sum_j e^{f_j + \log C}}
-$$
-We are free to choose the value of $C$. This will not change any of the results, but ==we can use this value to improve the numerical stability of the computation==. A common choice for $C$ is to set $\log C = -\max_j f_j$. This simply states that we should shift the values inside the vector $f$ so that the highest value is zero. In code:
-
-```python
-f = np.array([123, 456, 789]) # example with 3 classes and each having large scores
-p = np.exp(f) / np.sum(np.exp(f)) # Bad: Numeric problem, potential blowup
-
-# instead: first shift the values of f so that the highest number is 0:
-f -= np.max(f) # f becomes [-666, -333, 0]
-p = np.exp(f) / np.sum(np.exp(f)) # safe to do, gives the correct answer
-```
 
 ## 5 Softmax VS. Logistic Regression
 
