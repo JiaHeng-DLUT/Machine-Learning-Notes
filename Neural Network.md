@@ -18,7 +18,7 @@
 |       |      $dW1={X}^T\delta1$      |                                                           |     $dW2={S1}^T\delta2$      |                              |
 |       |   (n * h) = (n * m)(m * h)   |                                                           |   (h * c) = (h * m)(m * c)   |                              |
 |       | $db1=np.sum(\delta1,axis=0)$ |                                                           | $db2=np.sum(\delta2,axis=0)$ |                              |
-|       |            1 * c             |                                                           |            1 * c             |                              |
+|       |            1 * h             |                                                           |            1 * c             |                              |
 
 ---
 
@@ -41,6 +41,8 @@ db1 = np.sum(delta1, axis=0) # 1 * H
 dW2 += 2 * reg * W2
 dW1 += 2 * reg * W1
 ```
+
+
 
 
 

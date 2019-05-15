@@ -4,5 +4,5 @@
 - [ ] 2 Supervised Learning
   - [ ] [Linear Regression](./Linear Regression.md)
   - [ ] [Softmax Regression](./Softmax Regression.md)
-  - [ ] [Neural Network](./Neural Network.md)
+  - [x] [Neural Network](./Neural Network.md)
 
